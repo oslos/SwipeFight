@@ -1,11 +1,17 @@
 package com.example.oslos.swipefight;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.os.Build;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 
 import com.example.oslos.swipefight.objects.EnemyCharacter;
 import com.example.oslos.swipefight.objects.MainCharacter;
@@ -15,6 +21,7 @@ import java.util.List;
 import java.util.Random;
 
 import static android.content.Context.MODE_PRIVATE;
+import static com.example.oslos.swipefight.AppConstants.gameActivity;
 
 public class GameEngine
 {
@@ -26,8 +33,9 @@ public class GameEngine
     static long lastSpawn;
     static int difficulty;
     static SharedPreferences sharedPreferences;
+    static Object vibrationService;
 
-    public GameEngine(SharedPreferences sharedPreferences)
+    public GameEngine(SharedPreferences sharedPreferences,Object vibrationService)
     {
         this.sharedPreferences = sharedPreferences;
         _paint = new Paint();
@@ -39,6 +47,8 @@ public class GameEngine
         score = 0;
         lastSpawn = 0;
         difficulty = 20;
+        this.vibrationService = vibrationService;
+
     }
 
     Paint _paint;
@@ -46,6 +56,14 @@ public class GameEngine
     public void Update()
     {
         RunGame();
+    }
+
+    public void Reset(){
+
+        _enemy_characters.set(0,new EnemyCharacter(1));
+        _enemy_characters.set(1,new EnemyCharacter(2));
+        _enemy_characters.set(2,new EnemyCharacter(3));
+        _enemy_characters.set(3,new EnemyCharacter(4));
     }
 
     private void RunGame()
@@ -59,7 +77,7 @@ public class GameEngine
             }
             for (EnemyCharacter enChar: _enemy_characters
                  ) {
-                if(enChar.IsAlive() && (System.currentTimeMillis() - enChar.GetTimeAlive())>(40000 / difficulty) )
+                if(enChar.IsAlive() && (System.currentTimeMillis() - enChar.GetTimeAlive())>(40000 / difficulty) && score!=0 )
                 {
                     GameOver();
                 }
@@ -74,8 +92,21 @@ public class GameEngine
             editor.putInt("highscore", score);
             editor.apply();
         }
-        score = 0;
 
+
+        Vibrator v = (Vibrator) vibrationService;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            v.vibrate(VibrationEffect. createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
+        } else {
+            v.vibrate(500);
+
+        }
+        Reset();
+        Intent returnIntent = new Intent();
+        returnIntent.putExtra("score",score);
+        gameActivity.setResult(Activity.RESULT_OK,returnIntent);
+        score = 0;
+        gameActivity.finish();
     }
 
     public void Draw(Canvas canvas)
