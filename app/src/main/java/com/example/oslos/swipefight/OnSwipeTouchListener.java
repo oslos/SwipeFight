@@ -48,9 +48,9 @@ public class OnSwipeTouchListener implements View.OnTouchListener {
                 }
                 else if (Math.abs(diffY) > SWIPE_THRESHOLD && Math.abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
                     if (diffY > 0) {
-                        onSwipeBottom();
+                        onSwipeDown();
                     } else {
-                        onSwipeTop();
+                        onSwipeUp();
                     }
                     result = true;
                 }
@@ -62,14 +62,18 @@ public class OnSwipeTouchListener implements View.OnTouchListener {
     }
 
     public void onSwipeRight() {
+        AppConstants.GetEngine().Kill(3);
     }
 
     public void onSwipeLeft() {
+        AppConstants.GetEngine().Kill(1);
     }
 
-    public void onSwipeTop() {
+    public void onSwipeUp() {
+        AppConstants.GetEngine().Kill(0);
     }
 
-    public void onSwipeBottom() {
+    public void onSwipeDown() {
+        AppConstants.GetEngine().Kill(2);
     }
 }

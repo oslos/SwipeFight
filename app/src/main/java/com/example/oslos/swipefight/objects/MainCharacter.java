@@ -7,14 +7,12 @@ public class MainCharacter
 {
 	public MainCharacter()
 	{
-		_width = 50;
-		_height = 100;
-		_rotation = 0;
+		_width = 100;
+		_height = 200;
 	}
 	
 	static int _width;
 	static int _height;
-	static float _rotation;
 	static int _x, _y;
 	static Rect _rect;
 	
@@ -53,7 +51,7 @@ public class MainCharacter
 		if(_rect == null)
 		{
 			int left = screen_width / 2 - (GetWidth() / 2);
-			int bottom = screen_height - GetHeight();
+			int bottom = screen_height / 2 - (GetHeight() / 2);
 			int top = bottom - GetHeight();
 			int right = left + GetWidth();
 			

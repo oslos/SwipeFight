@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import android.view.MotionEvent;
 import android.view.SurfaceView;
+import android.widget.Toast;
 
 public class GameActivity extends Activity {
 
@@ -17,10 +18,12 @@ public class GameActivity extends Activity {
         
 
         SurfaceView view = new GameView(this, AppConstants.GetEngine());
+        OnSwipeTouchListener ostl = new OnSwipeTouchListener(this);
+        view.setOnTouchListener(ostl);
         setContentView(view);
 
     }
-
+/*
 	@Override
 	public boolean onTouchEvent(MotionEvent event) 
 	{
@@ -59,6 +62,7 @@ public class GameActivity extends Activity {
 	}
 	private void OnActionUp(MotionEvent event)
 	{
+		Toast.makeText(this,"Up",Toast.LENGTH_SHORT);
 		int x = (int)event.getX();
 		int y = (int)event.getY();
 
@@ -66,7 +70,8 @@ public class GameActivity extends Activity {
 
 	private void OnActionDown(MotionEvent event) 
 	{
+		Toast.makeText(this,"Down",Toast.LENGTH_SHORT);
 		 AppConstants.GetEngine().SetLastTouch(event.getX(), event.getY());
-	}
+	}*/
 
 }

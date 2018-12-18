@@ -14,7 +14,7 @@ public class BitmapBank
 
         _main_character = BitmapFactory.decodeResource(res, R.drawable.main_character);
     }
-    public Bitmap GetMainCharacter()
+    public Bitmap GetCharacter()
     {
         return _main_character;
     }
