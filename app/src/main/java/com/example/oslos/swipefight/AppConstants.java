@@ -1,6 +1,7 @@
 package com.example.oslos.swipefight;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.WindowManager;
@@ -14,11 +15,11 @@ public class AppConstants
     public static int SCREEN_WIDTH,
             SCREEN_HEIGHT;
 
-    public static void Initialization(Context context)
+    public static void Initialization(Context context, SharedPreferences sharedPreferences)
     {
         _bitmapsBank = new BitmapBank(context.getResources());
         SetScreenSize(context);
-        _engine = new GameEngine();
+        _engine = new GameEngine(sharedPreferences);
     }
 
 

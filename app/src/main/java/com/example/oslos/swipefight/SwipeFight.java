@@ -13,7 +13,7 @@ public class SwipeFight extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        AppConstants.Initialization(this.getApplicationContext());
+        AppConstants.Initialization(this.getApplicationContext(),getSharedPreferences("prefs",MODE_PRIVATE));
 
     }
 }

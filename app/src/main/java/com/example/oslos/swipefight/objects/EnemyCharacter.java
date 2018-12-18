@@ -36,6 +36,11 @@ public class EnemyCharacter
 
     public Boolean IsAlive(){return alive;}
 
+    public long GetTimeAlive()
+    {
+        return _alive_since;
+    }
+
     public void SetX(int x)
     {
         _x = x;

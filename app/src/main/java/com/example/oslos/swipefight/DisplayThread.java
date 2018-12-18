@@ -23,7 +23,7 @@ public class DisplayThread extends Thread
 
 
         _backgroundPaint = new Paint();
-        _backgroundPaint.setARGB(255, 0, 0, 0);
+        _backgroundPaint.setARGB(255, 255, 255, 255);
         _isOnRun = true;
     }
 

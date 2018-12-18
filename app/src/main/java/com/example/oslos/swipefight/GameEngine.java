@@ -1,7 +1,9 @@
 package com.example.oslos.swipefight;
 
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 
@@ -12,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class GameEngine
 {
     static List<EnemyCharacter> _enemy_characters = new ArrayList<EnemyCharacter>();
@@ -21,9 +25,11 @@ public class GameEngine
     static int score;
     static long lastSpawn;
     static int difficulty;
+    static SharedPreferences sharedPreferences;
 
-    public GameEngine()
+    public GameEngine(SharedPreferences sharedPreferences)
     {
+        this.sharedPreferences = sharedPreferences;
         _paint = new Paint();
         _main_character = new MainCharacter();
         _enemy_characters.add(new EnemyCharacter(1));
@@ -51,15 +57,67 @@ public class GameEngine
                 _enemy_characters.get(rnd. nextInt(4)).SetToSpawn();
                 lastSpawn =System.currentTimeMillis();
             }
+            for (EnemyCharacter enChar: _enemy_characters
+                 ) {
+                if(enChar.IsAlive() && (System.currentTimeMillis() - enChar.GetTimeAlive())>(40000 / difficulty) )
+                {
+                    GameOver();
+                }
+            }
         }
+    }
+
+    public void GameOver()
+    {
+        if(score> sharedPreferences.getInt("highscore",0)) {
+            SharedPreferences.Editor editor = sharedPreferences.edit();//getSharedPreferences("Prefs", MODE_PRIVATE).edit();
+            editor.putInt("highscore", score);
+            editor.apply();
+        }
+        score = 0;
+
     }
 
     public void Draw(Canvas canvas)
     {
         DrawMainCharacter(canvas);
         DrawEnemyCharacters(canvas);
+        DrawScore(canvas);
+        DrawHighScore(canvas);
     }
 
+    private void DrawHighScore(Canvas canvas)
+    {
+        float textSize = 50;
+
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paint.setTextSize(textSize);
+        paint.setColor(Color.argb(255,0,0,0));
+        paint.setTextAlign(Paint.Align.LEFT);
+        float baseline = -paint.ascent() * 2; // ascent() is negative
+        int width = (int) (paint.measureText("HighScore: " + String.valueOf(sharedPreferences.getInt("highscore",0))) + 0.5f); // round
+        int height = (int) (baseline + paint.descent() + 0.5f);
+        Bitmap image = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        canvas.drawText("HighScore: " + String.valueOf(sharedPreferences.getInt("highscore",0)), 0, baseline, paint);
+
+    }
+
+    private void DrawScore(Canvas canvas)
+    {
+
+        float textSize = 50;
+
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paint.setTextSize(textSize);
+        paint.setColor(Color.argb(255,0,0,0));
+        paint.setTextAlign(Paint.Align.LEFT);
+        float baseline = -paint.ascent(); // ascent() is negative
+        int width = (int) (paint.measureText("Score: " + String.valueOf(score)) + 0.5f); // round
+        int height = (int) (baseline + paint.descent() + 0.5f);
+        Bitmap image = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        canvas.drawText("Score: " + String.valueOf(score), 0, baseline, paint);
+
+    }
 
 
     private void DrawMainCharacter(Canvas canvas)
@@ -93,10 +151,4 @@ public class GameEngine
         }
     }
 
-/*
-    public void SetLastTouch(float x, float y)
-    {
-        _lastTouchedX = x;
-        _lastTouchedY = y;
-    }*/
 }
